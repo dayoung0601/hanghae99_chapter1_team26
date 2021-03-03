@@ -1,0 +1,227 @@
+<!Doctype html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+
+    <title>스파르타코딩클럽 | 26조의 편의점 맥주털기</title>
+
+    <!-- style -->
+    <style type="text/css">
+        * {
+            font-family: "Stylish", sans-serif;
+        }
+
+        .wrap {
+            width: 900px;
+            margin: auto;
+        }
+
+        .jumbotron {
+            text-align: center;
+            height: 300px;
+            background-color: gold;
+        }
+
+        .beer_name {
+            color: darkorange;
+        }
+
+        .beer_alcohol {
+            font-size: large;
+            color: black;
+        }
+
+        .comment {
+            color: blue;
+            font-weight: bold;
+        }
+
+        #post-box {
+            width: 500px;
+            margin: 20px auto;
+            padding: 50px;
+            border: black solid;
+            border-radius: 5px;
+        }
+
+        .opac:hover {
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+
+        }
+
+
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            showArticles();
+
+        });
+
+        function openClose() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#btn-post-box").text("추가하기");
+            } else {
+                $("#post-box").show();
+                $("#btn-post-box").text("닫기");
+            }
+        }
+
+        function plus() {
+            if ($("#plus-box").css("display") == "block") {
+                $("#plus-box").hide();
+                $("#plus-box").text("열기");
+            } else {
+                $("#plus-box").show();
+                $("#plus-box").text("닫기");
+            }
+        }
+
+        function addContents() {
+            let name = $('#name').val()
+            let img_url = $('#img_url').val()
+            let alcohol = $('#alcohol').val()
+            let store = $('#store').val()
+            let desc = $('#desc').val()
+            let country = $('#country').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/review",
+                data: {name_give:name, img_url:img_url, alcohol_give:alcohol,
+                    store_give:store, desc_give:desc, country_give:country},
+                success: function (response) {
+                    alert(response["msg"]);
+                    window.location.reload();
+                }
+            })
+
+        }
+
+        function showCardContents() {
+            $.ajax({
+                type: "GET",
+                url: "/review",
+                data: {},
+                success: function (response) {
+                    let beers = response['all_beers']
+                    for (let i = 0; i < beers.length; i++) {
+                        let name = beers[i]['name']
+                        let img_url = beers[i]['img_url']
+                        let alcohol = beers[i]['alcohol']
+                        let store = beers[i]['store']
+                        let desc = beers[i]['desc']
+                        let country = beers[i]['country']
+
+                        let temp_html = `
+                                    <img onmouseover="showCardContents()" onmouseleave="hideCardContents()" id="iamimg"
+                                     class="opac card-img-top" src="${img_url}" alt="Card image cap">
+                                    <h3 class="beer_name">${name}<span class="beer_alcohol">   ${alcohol}</span></h3>
+                                    <p>${store}</p>
+                                    <p>${desc}</p>
+                                    <p>${country}</p>`
+
+                        $('#cards-box').append(temp_html)
+                    }
+                }
+            })
+
+
+            $("#cardContents").show()
+
+        }
+
+        function hideCardContents() {
+            $("#cardContents").hide()
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+<div class="wrap">
+    <div class="jumbotron">
+        <h1 class="display-4">편의점 맥주 털기</h1>
+        <p class="lead">4캔 만원 앞에서 한없이 작아지는 당신을 위해...!</p>
+        <!--        <hr class="my-4">-->
+        <p class="lead">
+            <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-light">추가하기
+            </button>
+        </p>
+    </div>
+
+    <div id="post-box" class="form-post" style="display:none">
+        <div>
+            <div class="form-group">
+                <label>맥주명</label>
+                <input id="name" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="post-url">사진 URL</label>
+                <input id="post-url" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label>도수(%)</label>
+                <input id="alcohol" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="post-comment">간단 설명</label>
+                <textarea id="desc" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>원산국</label>
+                <input id="country" class="form-control" placeholder="">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="save()">저장</button>
+        </div>
+    </div>
+
+    <div onmouseover="showText()" onmouseleave="hideText()" class="img opac">
+
+    </div>
+
+
+    <div class="card-columns" id="cards-box">
+        <div class="card">
+            <img onmouseover="showCardContents()" onmouseleave="hideCardContents()" id="iamimg"
+                 class="opac card-img-top" src="http://m.assabeer.com/web/product/big/b_303.jpg"
+                 alt="Card image cap">
+
+            <div style="display:none" id="cardContents" class="card-body">
+                <h3 class="beer_name">타이거<span class="beer_alcohol">   5.4%</span></h3>
+                <p>편의점 리스트</p>
+                <p class="card-text">구수한 곡물과 달콤한 풍미와 함께 홉의 쌉싸름함이 탄산감과 함께 잘 드러나는 맥주</p>
+                <p>원산국</p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+
+</html>
