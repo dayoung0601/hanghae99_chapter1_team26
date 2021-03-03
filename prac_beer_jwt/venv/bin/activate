@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/dayoungkim/Desktop/prac_beer_jwt/venv"
+VIRTUAL_ENV="/Users/jungbin/Desktop/web+/무제 폴더/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

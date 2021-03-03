@@ -1,4 +1,6 @@
-#!/Users/dayoungkim/Desktop/prac_beer_jwt/venv/bin/python
+#!/bin/sh
+'''exec' "/Users/jungbin/Desktop/web+/무제 폴더/venv/bin/python" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys
